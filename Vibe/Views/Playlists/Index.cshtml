@@ -1,0 +1,86 @@
+﻿@using Vibe.Models
+@model PlayListsViewModel
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<link rel="stylesheet" href="~/Content/playlist.css"/>
+<h2>Playlists</h2>
+
+<div class="playlists">
+    <div class="add playlistItem">
+        <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+    </div>
+    @foreach (PlaylistBase p in Model.Playlists)
+    {
+        <div class="playlistItem">
+            <a href="@Url.Action("Playlist","Playlists", new { id = p.PlaylistId})">
+                <strong><p class="plName">@p.PlaylistName</p></strong>
+                @if (p.GetType() == typeof(PrivatePlaylist))
+                {
+                    <span class="glyphicon glyphicon-lock" aria-hidden="true"></span>
+                }
+                else
+                {
+                    <span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span>
+                }
+                <p class="nos">@p.Songs.Count<span> songs</span></p>
+            </a>
+            <div class="delete" onclick="javascript: location.href = '@Url.Action("Delete","Playlists", new { id = p.PlaylistId.ToString()})'">
+                <span  class="glyphicon glyphicon-trash" aria-hidden="true"></span>
+            </div>
+        </div>
+    }
+</div>
+<div class="bg-overlay"></div>
+<div class="popup">
+    <div class="form">
+        <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+        @using (Html.BeginForm("New", "Playlists", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+        {
+            @Html.AntiForgeryToken()
+
+            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+            <div class="form-group">
+                @Html.LabelFor(m => m.AddNewPlaylist.Name, new { @class = "col-md-2 control-label" })
+                <div class="col-md-10">
+                    @Html.TextBoxFor(m => m.AddNewPlaylist.Name, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(m => m.AddNewPlaylist.Name, "", new { @class = "text-danger" })
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(m => m.AddNewPlaylist.Private, new { @class = "col-md-2 control-label" })
+                <div class="col-md-10">
+                    @Html.CheckBoxFor(m => m.AddNewPlaylist.Private, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(m => m.AddNewPlaylist.Private, "", new { @class = "text-danger" })
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(m => m.AddNewPlaylist.Description, new { @class = "col-md-2 control-label" })
+                <div class="col-md-10">
+                    @Html.TextAreaFor(m => m.AddNewPlaylist.Description, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(m => m.AddNewPlaylist.Description, "", new { @class = "text-danger" })
+                </div>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Add" class="btn btn-default" />
+            </div>
+        }
+    </div>
+</div>
+
+<script type="text/javascript" src="~/Scripts/Playlists/Playlists.js"></script>
+<script type="text/javascript">
+    $(document).ready(function () {
+        $(".player-back").remove();
+    });
+    $(".glyphicon-remove").click(function () {
+        $(".bg-overlay").css({ "display": "none" });
+        $(".popup").css({ "display": "none" });
+    });
+    $(".add").click(function () {
+        $(".bg-overlay").css({ "display": "block" });
+        $(".popup").css({ "display": "block" });
+    });
+    document.body.style.backgroundImage = "url('../Content/img/records1.jpg')";
+</script>

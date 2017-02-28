@@ -1,0 +1,31 @@
+﻿
+<audio buffered style="display:none" id="audioPlayer" controls preload="metadata" loop>
+    <source type="" data-bind="attr: { src: songUrl }">
+</audio>
+<div class="player-back">
+    <div id="songProgress" class="songProgress">
+        <div id="progressBar"></div>
+        <div id="loadedBar"></div>
+    </div>
+    <div class="player">
+        <div class="volume-icons">
+            <span class="glyphicon glyphicon-volume-off" aria-hidden="true" data-bind="visible: muted()"></span>
+            <span class="glyphicon glyphicon-volume-down" aria-hidden="true" data-bind="visible: lowVolume()"></span>
+            <span class="glyphicon glyphicon-volume-up" aria-hidden="true" data-bind="visible: loudVolume()"></span>
+            <div id="volumeSlider"><span><em></em></span></div>
+            <p data-bind="text: times"></p>
+        </div>
+        <div class="main-controlls">
+            <center>
+                <span class="glyphicon glyphicon-step-backward" aria-hidden="true" data-bind="click: backward"></span>
+                <span class="glyphicon glyphicon-play" aria-hidden="true" data-bind="visible: !isPlaying(),click: play"></span>
+                <span class="glyphicon glyphicon-pause" aria-hidden="true" data-bind="visible: isPlaying(), click: pause"></span>
+                <span class="glyphicon glyphicon-step-forward" aria-hidden="true" data-bind="click: forward"></span>
+            </center>
+        </div>
+        <div class="songDetails">
+            <h3 data-bind="text: song().Name"></h3><span> - </span>
+            <p data-bind="text: song().Artist.Name"></p>
+        </div>
+    </div>
+</div>

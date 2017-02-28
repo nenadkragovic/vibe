@@ -1,0 +1,48 @@
+﻿
+@{
+    ViewBag.Title = "Following";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<form class="search" role="search" data-bind="submit: search">
+    <div class="form-group">
+        <input type="text" class="form-control" placeholder="Search" data-bind="value: searchText">
+    </div>
+</form>
+<div class="row followers left">
+    <div class="results"><h2 data-bind="text: users().length"></h2><h2> results</h2></div>
+    <ul data-bind="foreach: users">
+        <li>
+            <p data-bind="text: Name"></p><p data-bind="text: Email"></p><p><a data-bind="click: function(data, event){ $parent.SelectPLaylist($data, event) }">See Profile</a></p>
+        </li>
+    </ul>
+</div>
+
+<div class="profile" data-bind="if: SelectedProfile()">
+    <h2 class="profileName" data-bind="text: SelectedProfile().Name"></h2>
+    <img class="userPicture" data-bind="attr: {'src': SelectedProfile().Picture}"/>
+    <p class="profileBio" data-bind="text: SelectedProfile().Bio"></p>
+    <button data-bind="click: follow">Follow</button>
+    <hr />
+    <div class="playlists" data-bind="foreach: playlists">
+            <div class="playlistItem">
+                <a data-bind="attr: {'href': URL}">
+                    <strong><p class="plName" data-bind="text: PlaylistName"></p></strong>
+
+                    <span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span>
+                    
+                    <p class="nos" data-bind="text: NumberOfSongs "><span> songs</span></p>
+                </a>
+            </div>
+    </div>
+
+</div>
+
+
+
+
+<script type="text/javascript" src="~/Scripts/Profile/Following.js"></script>
+<script type="text/javascript">
+
+    document.body.style.backgroundImage = "url('../Content/img/following.jpg')";
+</script>

@@ -1,0 +1,62 @@
+﻿@model Vibe.Models.AlbumViewModel
+
+@{
+    ViewBag.Title = "View";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var user = (Vibe.Models.VibeUser)HttpContext.Current.Session["User"];
+}
+
+<div class="pagewrapper album">
+    <h2>@Model.Name</h2><br />
+    <p>@Model.Year</p><br />
+    <a href="@Model.Artist.Link">@Model.Artist.Name</a>
+</div>
+
+<div class="playlist">
+    <table class="table">
+        <thead>
+            <tr>
+                <th class="text-left">Play</th>
+                <th class="text-center">Name</th>
+                <th class="text-center">Artist</th>
+                <th class="text-center">Album</th>
+                <th class="text-center">Likes</th>
+                @if (user != null)
+                {
+                    <th class="text-right">Actions</th>
+                }
+
+            </tr>
+        </thead>
+        <tbody data-bind="foreach: songs">
+            <tr>
+                <td><span data-bind="click: selectSong" class="glyphicon glyphicon-play" aria-hidden="true"></span></td>
+                <td class="text-center" data-bind="text: Name"></td>
+                <td class="text-center" data-bind="text: Artist.Name"><a data-bind="text: Artist.Link"></a></td>
+                <td class="text-center" data-bind="text: Album.Name"><a data-bind="text: Album.Link"></a></td>
+                <td class="text-center" data-bind="text: Likes"></td>
+                @if (user != null)
+                {
+                    <td class="td-actions text-right">
+                        <span data-bind="click: tumbsUp" class="glyphicon glyphicon-thumbs-up" aria-hidden="true"></span>
+                        <span data-bind="click: addToPlaylist" class="glyphicon glyphicon-plus-sign" aria-hidden="true"></span>
+                    </td>
+                }
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+    <script type="text/javascript" src="~/Scripts/Artist/Artists.js"></script>
+    <script type="text/javascript">
+        $(".glyphicon-remove").click(function () {
+            $(".bg-overlay").css({ "display": "none" });
+            $(".popup").css({ "display": "none" });
+        });
+        $(document).ready(function () {
+            var vm = new ArtstViewModel('@Model.Id.ToString()');
+            ko.applyBindings(vm);
+            vm.search();
+        });
+        document.body.style.backgroundImage = "url('@Model.Picture')";
+    </script>

@@ -1,0 +1,69 @@
+﻿@using Microsoft.AspNet.Identity
+<!DOCTYPE html>
+<html>
+@using Vibe.Models
+@{
+    var user = (VibeUser)HttpContext.Current.Session["user"];
+}
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vibe</title>
+    @Styles.Render("~/Content/css")
+    @Scripts.Render("~/bundles/modernizr")
+    <link rel="stylesheet" href="~/Content/jquery-ui.css"/>
+    <link rel="stylesheet" href="~/Content/jquery-ui.structure.min.css" />
+    <link rel="stylesheet" href="~/Content/jquery-ui.theme.min.css" />
+    <link rel="stylesheet" href="~/content/demo.css"/>
+    @*<link rel="stylesheet" href="~/content/material-dashboard.css" />*@
+    @*<link rel="stylesheet" href="~/Content/material-kit.css" />*@
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/bootstrap")
+    @RenderSection("scripts", required: false)
+    <script type="text/javascript" src="~/Scripts/bootstrap-notify.js"></script>
+    <script type="text/javascript" src="~/Scripts/chartist.min.js"></script>
+    @*<script type="text/javascript" src="~/Scripts/demo.js"></script>
+    <script type="text/javascript" src="~/Scripts/jquery-3.1.0.min.js"></script>
+    <script type="text/javascript" src="~/Scripts/material-dashboard.js"></script>
+    <script type="text/javascript" src="~/Scripts/material-kit.js"></script>*@
+    <script type="text/javascript" src="~/Scripts/nouislider.min.js"></script>
+    <script type="text/javascript" src="~/Scripts/jquery-ui.min.js"></script>
+    <script type="text/javascript" src="~/Scripts/knockout.js"></script>
+    <script type="text/javascript" src="~/Scripts/common.js"></script>    
+</head>
+<body>
+    <div class="navbar navbar-inverse navbar-fixed-top">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+            </div>
+            @*<img class ="logo" src="/Content/img/vibe-logo.png" />*@
+            <div class="navbar-collapse collapse">
+                <ul class="nav navbar-nav">
+                    <li>@Html.ActionLink("Home", "Index", "Home")</li>
+                @if (user != null)
+                {
+                    <li>@Html.ActionLink("My Songs", "Index", "MySongs")</li>
+                    <li>@Html.ActionLink("Playlists", "Index", "Playlists")</li>
+                    <li>@Html.ActionLink("Discover", "Discover", "Profile")</li>
+                }
+                </ul>
+                @Html.Partial("_LoginPartial")
+            </div>
+        </div>
+    </div>
+    <div class="container body-content">
+        @RenderBody()
+        @*<hr />*@
+        <footer>
+            @*<p>&copy; @DateTime.Now.Year - Vibe</p>*@
+
+            @Html.Partial("Player")
+        </footer>
+    </div>
+</body>
+</html>

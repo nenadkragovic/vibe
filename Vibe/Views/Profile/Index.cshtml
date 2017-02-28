@@ -1,0 +1,151 @@
+﻿@model Vibe.Models.ProfileViewModel
+@using Vibe.Models;
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var user = (VibeUser)HttpContext.Current.Session["user"];
+}
+
+<h2>@user.FullName</h2>
+
+<div class="row profile-page">
+    <div class="uploadImage">
+        @if (Model.ImageUrl != null)
+        {
+            <img class="profile-photo" data-bind="attr:{'src':image}" />
+        }
+        else
+        {
+            <img class="profile-photo" src="~/Content/img/user.png" />
+        }
+        <button class="ui-button" id="uploadImage" onclick="javascript: document.getElementById('imageUpload').click()">Upload Image</button>
+    </div>
+
+
+    @using (Html.BeginForm("Update", "Profile", FormMethod.Post, new { @class = "form-horizontal", role = "form", enctype = "multipart/form-data" }))
+    {
+        @Html.AntiForgeryToken()
+
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+            <div class="form-group">
+                <p>Email:</p>
+                <div class="col-md-10">
+                    @Html.TextBoxFor(m => m.Email, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(m => m.Email, "", new { @class = "text-danger" })
+                </div>
+            </div>
+            <div class="form-group">
+                <p>Password:</p>
+                <div class="col-md-10">
+                    @Html.PasswordFor(m => m.Password, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(m => m.Password, "", new { @class = "text-danger" })
+                </div>
+            </div>
+            <div class="form-group">
+                <p>Repeat password:</p>
+                <div class="col-md-10">
+                    @Html.PasswordFor(m => m.RepeatPassword, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(m => m.RepeatPassword, "", new { @class = "text-danger" })
+                </div>
+            </div>
+            <div class="form-group">
+                <p>Name:</p>
+                <div class="col-md-10">
+                    @Html.TextBoxFor(m => m.FullName, new { @class = "form-control"})
+                    @Html.ValidationMessageFor(m => m.FullName, "", new { @class = "text-danger" })
+                </div>
+            </div>
+            <div class="form-group">
+                <p>Birth date:</p>
+                <div class="col-md-10">
+                    @Html.TextBoxFor(m => m.BirthDate, new { @class = "form-control", id= "datepicker" })
+                    @Html.ValidationMessageFor(m => m.BirthDate, "", new { @class = "text-danger" })
+                </div>
+            </div>
+            <div class="form-group">
+                <p>Short biography:</p>
+                <div class="col-md-10">
+                    @Html.TextAreaFor(m => m.Bio, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(m => m.Bio, "", new { @class = "text-danger" })
+                </div>
+            </div>
+            <div class="col-md-10" style="display: none">
+                <p id="selectedSong"></p>
+                @Html.TextBoxFor(m => m.Image, new Dictionary<string, object> { { "type", "file" }, { "id", "imageUpload" }, { "accept", "image/*" }, { "multiple", "false" }, { "data-bind", "event: { change: function () { addImage($element.files[0]) } }" } })
+                @Html.ValidationMessageFor(m => m.Image, "", new { @class = "text-danger" })
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Update" class="btn btn-default" style="text-align:center"/>
+            </div>
+    }
+</div>
+
+<div class="row followers" data-bind="if: followers()">
+    <h2><span data-bind="visible: !followersOpen(), click: openFollowers" class="glyphicon glyphicon-plus" aria-hidden="true"></span><span data-bind="visible: followersOpen(), click: openFollowers" class="glyphicon glyphicon-minus" aria-hidden="true"></span></h2><div class="results"><h2 data-bind="text: followers().length"></h2><h2> followers</h2></div>
+    <ul data-bind="visible: followersOpen(), foreach: followers">
+        <li>
+            <p data-bind="text: Name"></p><p data-bind="text: Email"></p><p><a data-bind="click: function(data, event){ $parent.SelectPLaylist($data, event) }">See Profile</a></p>
+        </li>
+    </ul>
+</div>
+
+<div class="row following" data-bind="if: following()">
+    <h2><span data-bind="visible: !followingOpen(), click: openFollowing" class="glyphicon glyphicon-plus" aria-hidden="true"></span><span data-bind="visible: followingOpen(), click: openFollowing" class="glyphicon glyphicon-minus" aria-hidden="true"></span></h2><div class="results"><h2 data-bind="text: following().length"></h2><h2> following</h2></div>
+    <ul data-bind="visible: followingOpen(), foreach: following">
+        <li>
+            <p data-bind="text: Name"></p><p data-bind="text: Email"></p><p><a data-bind="click: function(data, event){ $parent.SelectPLaylist($data, event) }">See Profile</a></p>
+        </li>
+    </ul>
+</div>
+
+
+<div class="bg-overlay"></div>
+<div class="popup">
+    <div class="form profilePopup">
+        <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+        <form id="addToPlaylistForm">
+            <div class="profile" data-bind="if: SelectedProfile()">
+                <h2 class="profileName" data-bind="text: SelectedProfile().Name"></h2>
+                <img class="userPicture" data-bind="attr: {'src': SelectedProfile().Picture}" />
+                <p class="profileBio" data-bind="text: SelectedProfile().Bio"></p>
+                <button data-bind="click: unfollow">Unfollow</button>
+                <hr />
+                <div class="playlists" data-bind="foreach: playlists">
+                    <div class="playlistItem">
+                        <a data-bind="attr: {'href': URL}">
+                            <strong><p class="plName" data-bind="text: PlaylistName"></p></strong>
+
+                            <span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span>
+
+                            <p class="nos" data-bind="text: NumberOfSongs "><span> songs</span></p>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+    </div>
+
+    <script type="text/javascript" src="~/Scripts/Profile/Profile.js"></script>
+    <script type="text/javascript">
+    $(".glyphicon-remove").click(function () {
+        $(".bg-overlay").css({ "display": "none" });
+        $(".popup").css({ "display": "none" });
+    });
+    $(".player-back").remove();
+    $("#audioPlayer").remove();
+    $(function () {
+        $(".player-back").remove();
+        $("#audioPlayer").remove();
+        $("#datepicker").datepicker();
+    }); 
+
+    $(document).ready(function () {
+        var vm = new ProfileViewModel('@Model.ImageUrl');
+        ko.applyBindings(vm);
+    });
+    document.body.style.backgroundImage = "url('../Content/img/piano.jpg')";
+
+
+    </script>

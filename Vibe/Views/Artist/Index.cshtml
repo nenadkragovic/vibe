@@ -1,0 +1,75 @@
+﻿@model Vibe.Models.ArtistViewModel
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="pagewrapper">
+    <div class="coverPhoto">
+        <center>
+            <img src="@Model.ImageUrl" />
+        </center>
+
+    </div>
+    <div class="artist-data">
+        <h2>@Model.ArtistName</h2>
+        <p>@Model.Biography</p>
+    </div>
+
+
+    <div class="albumList">
+        <h2>Albums</h2>
+        <hr />
+        <center>
+            @foreach (var album in Model.Albums)
+            {
+                <div class="albumItem" onclick="javascript: location.href='@album.Link'">
+                    <img src="~/Content/img/record.png" onclick="javascript: location.href='@album.Link'" />
+                    <p>@album.Name</p>
+                </div>
+            }
+        </center>
+    </div>
+</div>
+
+
+
+
+@if (Model.Playlists != null)
+{
+    <div class="bg-overlay"></div>
+    <div class="popup">
+        <div class="form">
+            <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+            <form id="addToPlaylistForm" data-bind="submit: addSongToPlaylist">
+                <div class="form-group">
+                    @Html.LabelFor(m => m.Playlists, new { @class = "col-md-2 control-label" })
+                    <div class="col-md-10">
+                        @Html.DropDownListFor(m => m.Playlists.First().Text, Model.Playlists, new { @class = "form-control", id = "playlists" })
+                        @Html.ValidationMessageFor(m => m.Playlists, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <div class="form-group">
+                    <input type="submit" value="Add" class="btn btn-default" />
+                </div>
+            </form>
+        </div>
+    </div>
+}
+
+<script type="text/javascript" src="~/Scripts/Artists/Artists.js"></script>
+<script type="text/javascript">
+    $(".glyphicon-remove").click(function () {
+        $(".bg-overlay").css({ "display": "none" });
+        $(".popup").css({ "display": "none" });
+    });
+    $(document).ready(function () {
+        $(".player-back").remove();
+        var vm = new ArtstViewModel();
+        ko.applyBindings(vm);
+    });
+    document.body.style.backgroundImage = "url('../Content/img/artists.jpg')";
+</script>
+
+

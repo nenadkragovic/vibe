@@ -1,0 +1,215 @@
+﻿@using Vibe.Models
+@model AdminViewModel
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+    var user = (VibeUser)ViewData["user"];
+}
+<div class="row admin">
+    <br />
+    <br />
+
+    <div class="artistUploadForm">
+        <p style="color:white">Add Artist</p>
+        @using (Html.BeginForm("AddArtist", "Admin", FormMethod.Post, new { @class = "form-horizontal", role = "form", id = "artistUploadForm", enctype = "multipart/form-data" }))
+        {
+            @Html.AntiForgeryToken()
+
+            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+            <div class="form-group">
+                <div class="col-md-10">
+                    <span class="glyphicon glyphicon-upload" aria-hidden="true" onclick="javascript: document.getElementById('artistPictureUpload').click();"></span>
+                    <p id="selectedArtist"></p>
+                    @Html.TextBoxFor(m => m.AddArtist.Picture, new { type = "file", id = "artistPictureUpload" })
+                    @Html.ValidationMessageFor(m => m.AddArtist.Picture, "", new { @class = "text-danger" })
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(m => m.AddArtist.Name, new { @class = "col-md-2 control-label" })
+                <div class="col-md-10">
+                    @Html.TextBoxFor(m => m.AddArtist.Name, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(m => m.AddArtist.Name, "", new { @class = "text-danger" })
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(m => m.AddArtist.Biography, new { @class = "col-md-2 control-label" })
+                <div class="col-md-10">
+                    @Html.TextBoxFor(m => m.AddArtist.Biography, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(m => m.AddArtist.Biography, "", new { @class = "text-danger" })
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(m => m.AddArtist.Genres, new { @class = "col-md-2 control-label" })
+                <div class="col-md-10">
+                    @Html.TextBoxFor(m => m.AddArtist.Genres, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(m => m.AddArtist.Genres, "", new { @class = "text-danger" })
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(m => m.AddArtist.Tags, new { @class = "col-md-2 control-label" })
+                <div class="col-md-10">
+                    @Html.TextBoxFor(m => m.AddArtist.Tags, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(m => m.AddArtist.Tags, "", new { @class = "text-danger" })
+                </div>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Add" class="btn btn-default" />
+            </div>
+        }
+    </div>
+    <div class="albumUploadForm">
+        <p style="color:white">Add Album</p>
+        @using (Html.BeginForm("AddAlbum", "Admin", FormMethod.Post, new { @class = "form-horizontal", role = "form", id = "albumUploadForm", enctype = "multipart/form-data" }))
+        {
+            @Html.AntiForgeryToken()
+
+            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+            <div class="form-group">
+                <div class="col-md-10">
+                    <span class="glyphicon glyphicon-upload" aria-hidden="true" onclick="javascript: document.getElementById('albumPictureUpload').click();"></span>
+                    <p id="selectedAlbum"></p>
+                    @Html.TextBoxFor(m => m.AddAlbum.Picture, new { type = "file", id = "albumPictureUpload" })
+                    @Html.ValidationMessageFor(m => m.AddAlbum.Picture, "", new { @class = "text-danger" })
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(m => m.AddAlbum.Name, new { @class = "col-md-2 control-label" })
+                <div class="col-md-10">
+                    @Html.TextBoxFor(m => m.AddAlbum.Name, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(m => m.AddAlbum.Name, "", new { @class = "text-danger" })
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(m => m.AddAlbum.ArtistIds, new { @class = "col-md-2 control-label" })
+                <div class="col-md-10" id="artistIds">
+                    @Html.DropDownListFor(m => m.AddAlbum.ArtistId, Model.AddAlbum.ArtistIds, new { @class = "form-control", onclick = "javascript: SelectArtistId()" })
+                    @Html.ValidationMessageFor(m => m.AddAlbum.ArtistIds, "", new { @class = "text-danger" })
+                    @Html.Hidden(Model.AddAlbum.ArtistId, new { id = "selectedArtistId", @value = "1" })
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(m => m.AddAlbum.Year, new { @class = "col-md-2 control-label" })
+                <div class="col-md-10">
+                    @Html.TextBoxFor(m => m.AddAlbum.Year, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(m => m.AddAlbum.Year, "", new { @class = "text-danger" })
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(m => m.AddAlbum.Genres, new { @class = "col-md-2 control-label" })
+                <div class="col-md-10">
+                    @Html.TextBoxFor(m => m.AddAlbum.Genres, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(m => m.AddAlbum.Genres, "", new { @class = "text-danger" })
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(m => m.AddAlbum.Tags, new { @class = "col-md-2 control-label" })
+                <div class="col-md-10">
+                    @Html.TextBoxFor(m => m.AddAlbum.Tags, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(m => m.AddAlbum.Tags, "", new { @class = "text-danger" })
+                </div>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Add" class="btn btn-default" />
+            </div>
+        }
+    </div>
+    <div class="songUploadForm" data-bind="visible: formVisible">
+        <p style="color:white">Add Song</p>
+        @using (Html.BeginForm("AddSong", "Admin", FormMethod.Post, new { @class = "form-horizontal", role = "form", id = "songUploadForm", enctype = "multipart/form-data" }))
+        {
+            @Html.AntiForgeryToken()
+
+            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+            <div class="form-group">
+                <div class="col-md-10">
+                    <span class="glyphicon glyphicon-upload" aria-hidden="true" onclick="javascript: document.getElementById('fileUpload').click();"></span>
+                    <p id="selectedSong"></p>
+                    @Html.TextBoxFor(m => m.AddSong.File, new { type = "file", id = "fileUpload" })
+                    @Html.ValidationMessageFor(m => m.AddSong.File, "", new { @class = "text-danger" })
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(m => m.AddSong.Name, new { @class = "col-md-2 control-label" })
+                <div class="col-md-10">
+                    @Html.TextBoxFor(m => m.AddSong.Name, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(m => m.AddSong.Name, "", new { @class = "text-danger" })
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(m => m.AddSong.Artists, new { @class = "col-md-2 control-label" })
+                <div class="col-md-10" id="artistSongIds">
+                    @Html.DropDownListFor(m=>m.AddSong.SelectedArtist,Model.AddSong.Artists, new { @class="form-control", onclick="javascript: SelectSongArtist()" })
+                    @Html.ValidationMessageFor(m => m.AddSong.Artists, "", new { @class = "text-danger" })
+                    @Html.Hidden(Model.AddSong.SelectedArtist,new { id="selectedSongArtistId", @value="1"})
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(m => m.AddSong.Albums, new { @class = "col-md-2 control-label" })
+                <div class="col-md-10">
+                    @Html.DropDownListFor(m => m.AddSong.SelectedAlbum, Model.AddSong.Albums, new { @class = "form-control", onclick = "javascript: SelectSongAlbum()" })
+                    @Html.ValidationMessageFor(m => m.AddSong.Albums, "", new { @class = "text-danger" })
+                    @Html.Hidden(Model.AddSong.SelectedAlbum, new { id = "selectedSongAlbumId", @value = "1" })
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(m => m.AddSong.Year, new { @class = "col-md-2 control-label" })
+                <div class="col-md-10">
+                    @Html.TextBoxFor(m => m.AddSong.Year, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(m => m.AddSong.Year, "", new { @class = "text-danger" })
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(m => m.AddSong.Genres, new { @class = "col-md-2 control-label" })
+                <div class="col-md-10">
+                    @Html.TextBoxFor(m => m.AddSong.Genres, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(m => m.AddSong.Genres, "", new { @class = "text-danger" })
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(m => m.AddSong.Tags, new { @class = "col-md-2 control-label" })
+                <div class="col-md-10">
+                    @Html.TextBoxFor(m => m.AddSong.Tags, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(m => m.AddSong.Tags, "", new { @class = "text-danger" })
+                </div>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Add" class="btn btn-default" />
+            </div>
+        }
+    </div>
+</div>
+
+<script type="text/javascript">
+    $(".glyphicon-remove").click(function () {
+        $(".bg-overlay").css({ "display": "none" });
+        $(".popup").css({ "display": "none" });
+    });
+    document.getElementById('fileUpload').onchange = function () {
+        $("#selectedSong").text(this.value);
+    }
+    document.getElementById('albumPictureUpload').onchange = function () {
+        $("#selectedAlbum").text(this.value);
+    }
+    document.getElementById('artistPictureUpload').onchange = function () {
+        $("#selectedArtist").text(this.value);
+    }
+    $(document).ready(function () {
+        $(".player-back").hide();
+    });
+    $('.player-back').remove();
+
+    var SelectArtistId = function () {
+        var artistId = $("#artistIds option:selected").val();
+        $("#selectedArtistId").val(artistId);
+    }
+    var SelectSongArtist = function () {
+        var artistId = $("#artistIds option:selected").val();
+        $("#selectedSongArtistId").val(artistId);
+    }
+    var SelectSongAlbum = function () {
+        var artistId = $("#artistIds option:selected").val();
+        $("#selectedSongAlbumId").val(artistId);
+    }
+    document.body.style.backgroundImage = "url('../Content/img/admin.jpg')";
+</script>

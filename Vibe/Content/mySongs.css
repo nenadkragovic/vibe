@@ -1,0 +1,50 @@
+﻿body 
+{
+
+}
+h2
+{
+    letter-spacing:2px;
+    font-weight:300;
+}
+.player-back
+{
+    opacity:0.7;
+}
+.form-control
+{
+    color:white;
+}
+.search
+{
+    color:white;
+    display:inline-block;
+}
+.songUpload
+{
+    display:inline-block;
+    float:right;
+}
+.songUpload button
+{
+    position:relative;
+    width:150px;
+    border:1px solid white;
+    height:30px;
+    border-radius:5px;
+    background: transparent;
+    color:white;
+    text-transform:uppercase;
+    font-weight:500;
+    letter-spacing: 2px;
+    top:15px;
+}
+.songUpload button:hover
+{
+    box-shadow: 0 2px 4px 0 rgba(255, 255, 255, 0.2), 0 3px 10px 0 rgba(255, 255, 255, 0.19);
+}
+.row
+{
+    margin-left:0%;
+    margin-right:0%;
+}

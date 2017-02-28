@@ -1,0 +1,130 @@
+﻿@using Vibe.Models
+@model MySongsViewModel
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+    var user = (VibeUser)ViewData["user"];
+}
+<link rel="stylesheet" href="~/Content/mySongs.css"/>
+<h2>My Songs</h2>
+
+<div class="row">
+    <form class="search" role="search" data-bind="submit: search">
+        <div class="form-group">
+            <input type="text" class="form-control" placeholder="Search" data-bind="value: searchText">
+        </div>
+    </form>
+    <div class="songUpload">
+        <button data-bind="click: showUpload" >Upload</button>
+    </div>
+    <br />
+    <br />
+    <div class="songUploadForm" data-bind="visible: formVisible">
+        @using (Html.BeginForm("AddSong", "MySongs", FormMethod.Post, new { @class = "form-horizontal", role = "form", id = "songUploadForm", enctype = "multipart/form-data" }))
+        {
+            @Html.AntiForgeryToken()
+
+            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+            <div class="form-group ">
+                <div class="col-md-10">
+                    <span class="glyphicon glyphicon-upload" aria-hidden="true" onclick="javascript: document.getElementById('fileUpload').click();"></span>
+                    <p id="selectedSong"></p>
+                    @Html.TextBoxFor(m => m.Song, new { type = "file" , id="fileUpload", accept = "audio/*", multiple = "false" })
+                    @Html.ValidationMessageFor(m => m.Name, "", new { @class = "text-danger" })
+                </div>
+            </div>
+            <div class="form-group" style="color:#333">
+                @Html.LabelFor(m => m.Name, new { @class = "col-md-2 control-label" })
+                <div class="col-md-10">
+                    @Html.TextBoxFor(m => m.Name, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(m => m.Name, "", new { @class = "text-danger" })
+                </div>
+            </div>
+            <div class="form-group " style="color:#333">
+                @Html.LabelFor(m => m.Artist, new { @class = "col-md-2 control-label" })
+                <div class="col-md-10">
+                    @Html.TextBoxFor(m => m.Artist, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(m => m.Artist, "", new { @class = "text-danger" })
+                </div>
+            </div>
+            <div class="form-group" style="color:#333">
+                @Html.LabelFor(m => m.Album, new { @class = "col-md-2 control-label" })
+                <div class="col-md-10">
+                    @Html.TextBoxFor(m => m.Album, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(m => m.Album, "", new { @class = "text-danger" })
+                </div>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Add" class="btn btn-default" />
+            </div>
+        }
+    </div>
+</div>
+
+<div class="">
+    <table class="table">
+        <thead>
+            <tr>
+                <th class="text-center">Play</th>
+                <th class="text-center">Name</th>
+                <th class="text-center">Artist</th>
+                <th class="text-center">Album</th>
+                @if (user != null)
+                {
+                    <th class="text-right">Actions</th>
+                }
+
+            </tr>
+        </thead>
+        <tbody data-bind="foreach: songs">
+            <tr>
+                <td><span data-bind="click: selectSong" class="glyphicon glyphicon-play" aria-hidden="true"></span></td>
+                <td class="text-center" data-bind="text: Name"></td>
+                <td class="text-center" data-bind="text: Artist.Name"><a data-bind="text: Artist.Link"></a></td>
+                <td class="text-center" data-bind="text: Album.Name"><a data-bind="text: Album.Link"></a></td>
+                @if (user != null)
+                {
+                    <td class="td-actions text-right">
+                        <span data-bind="click: deleteSong" class="glyphicon glyphicon-trash" aria-hidden="true"></span>
+                        <span data-bind="click: addToPlaylist" class="glyphicon glyphicon-plus-sign" aria-hidden="true"></span>
+                    </td>
+                }
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+@if (Model.Playlists != null)
+{
+    <div class="bg-overlay"></div>
+    <div class="popup">
+        <div class="form">
+            <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+            <form id="addToPlaylistForm" data-bind="submit: addSongToPlaylist">
+                <div class="form-group">
+                    @Html.LabelFor(m => m.Playlists, new { @class = "col-md-2 control-label" })
+                    <div class="col-md-10">
+                        @Html.DropDownListFor(m => m.Playlists.First().Text, Model.Playlists, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(m => m.Playlists, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <div class="form-group">
+                    <input type="submit" value="Add" class="btn btn-default" />
+                </div>
+            </form>
+        </div>
+    </div>
+}
+
+<script src="~/Scripts/MySongs/mySongs.js"></script>
+<script type="text/javascript">
+    $(".glyphicon-remove").click(function () {
+        $(".bg-overlay").css({ "display": "none" });
+        $(".popup").css({ "display": "none" });
+    });
+    document.getElementById('fileUpload').onchange = function () {
+        $("#selectedSong").text(this.value);
+    }
+    document.body.style.backgroundImage = "url('../Content/img/violin.jpg')";
+</script>
